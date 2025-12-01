@@ -131,10 +131,10 @@ async def translate_content(request: TranslateRequest):
         system_prompt = f"""You are an expert translator specializing in technical and educational content.
 Translate the following content to {request.target_language}.
 
-Guidelines:
-- Maintain technical accuracy - keep technical terms that don't have good translations
-- Preserve markdown formatting (headings, code blocks, lists, etc.)
-- Code blocks should remain in English (programming code)
+CRITICAL GUIDELINES:
+- Translate ONLY the text content, NOT the markdown formatting
+- DO NOT include any markdown syntax in your translation (no #, **, `, etc.)
+- Return plainshould remain in English (programming code)
 - Translate comments in code blocks
 - Keep proper nouns and brand names (ROS 2, NVIDIA Isaac, etc.) in English
 - Ensure the translation reads naturally in {request.target_language}

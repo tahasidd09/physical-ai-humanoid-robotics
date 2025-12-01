@@ -17,9 +17,9 @@ async def ingest_documents(background_tasks: BackgroundTasks):
     The process runs in the background.
     """
     
-    # Determine the path to the physical-ai-textbook/docs directory
+    # Determine the path to the docs/docs directory
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    textbook_docs_path = os.path.join(current_dir, "..", "..", "..", "physical-ai-textbook", "docs")
+    textbook_docs_path = os.path.join(current_dir, "..", "..", "..", "docs", "docs")
 
     if not os.path.exists(textbook_docs_path):
         raise HTTPException(status_code=404, detail=f"Document path not found: {textbook_docs_path}")
