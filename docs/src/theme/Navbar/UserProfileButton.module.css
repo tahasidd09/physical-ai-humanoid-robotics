@@ -228,8 +228,15 @@
 
 .hint {
   color: var(--ifm-font-color-secondary);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   margin-bottom: 1rem;
+  font-weight: normal;
+}
+
+.formGroup label .hint {
+  display: inline;
+  margin-left: 0.25rem;
+  margin-bottom: 0;
 }
 
 .formGroup {
@@ -297,6 +304,29 @@
   border-radius: 6px;
   margin-bottom: 1rem;
   font-size: 0.85rem;
+}
+
+/* Field-level validation errors */
+.fieldError {
+  display: block;
+  color: var(--ifm-color-danger);
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+.inputError {
+  border-color: var(--ifm-color-danger) !important;
+  background: var(--ifm-color-danger-lightest) !important;
+}
+
+.inputError:focus {
+  border-color: var(--ifm-color-danger) !important;
+}
+
+.required {
+  color: var(--ifm-color-danger);
+  font-weight: 600;
 }
 
 .submitButton {

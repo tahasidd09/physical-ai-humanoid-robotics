@@ -21,6 +21,7 @@ export default function UserProfileButton(): JSX.Element {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [error, setError] = useState('');
+  const [validationErrors, setValidationErrors] = useState<{[key: string]: string}>({});
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [background, setBackground] = useState<BackgroundFormData>({
     programming_experience: 'intermediate',
@@ -52,9 +53,51 @@ export default function UserProfileButton(): JSX.Element {
     }
   }, [user]);
 
+  const validateForm = (): boolean => {
+    const errors: {[key: string]: string} = {};
+    
+    // Name validation (for signup)
+    if (isSignup && !name.trim()) {
+      errors.name = 'Name is required';
+    } else if (isSignup && name.trim().length < 2) {
+      errors.name = 'Name must be at least 2 characters';
+    }
+    
+    // Email validation
+    if (!email.trim()) {
+      errors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errors.email = 'Please enter a valid email address';
+    }
+    
+    // Password validation
+    if (!password) {
+      errors.password = 'Password is required';
+    } else if (password.length < 6) {
+      errors.password = 'Password must be at least 6 characters';
+    } else if (isSignup && !/(?=.*[a-z])(?=.*[A-Z])/.test(password)) {
+      errors.password = 'Password must contain uppercase and lowercase letters';
+    }
+    
+    // Programming languages validation (for signup)
+    if (isSignup && background.preferred_languages.length === 0) {
+      errors.languages = 'Please select at least one programming language';
+    }
+    
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setValidationErrors({});
+    
+    // Validate form
+    if (!validateForm()) {
+      return;
+    }
+    
     try {
       if (isSignup) {
         await signup(email, password, name, background);
@@ -64,7 +107,14 @@ export default function UserProfileButton(): JSX.Element {
       setShowAuthModal(false);
       resetForm();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Authentication failed');
+      // Better error message parsing
+      let errorMessage = 'Authentication failed';
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else if (typeof err === 'object' && err !== null) {
+        errorMessage = JSON.stringify(err);
+      }
+      setError(errorMessage);
     }
   };
 
@@ -79,6 +129,7 @@ export default function UserProfileButton(): JSX.Element {
     setPassword('');
     setName('');
     setError('');
+    setValidationErrors({});
     setBackground({
       programming_experience: 'intermediate',
       robotics_experience: 'none',
@@ -206,16 +257,37 @@ export default function UserProfileButton(): JSX.Element {
               {isSignup && (
                 <div className={styles.formGroup}>
                   <label>Name</label>
-                  <input type="text" value={name} onChange={e => setName(e.target.value)} required placeholder="Your name" />
+                  <input 
+                    type="text" 
+                    value={name} 
+                    onChange={e => { setName(e.target.value); setValidationErrors(prev => ({...prev, name: ''})); }} 
+                    className={validationErrors.name ? styles.inputError : ''}
+                    placeholder="Your name" 
+                  />
+                  {validationErrors.name && <span className={styles.fieldError}>{validationErrors.name}</span>}
                 </div>
               )}
               <div className={styles.formGroup}>
                 <label>Email</label>
-                <input type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="your@email.com" />
+                <input 
+                  type="email" 
+                  value={email} 
+                  onChange={e => { setEmail(e.target.value); setValidationErrors(prev => ({...prev, email: ''})); }} 
+                  className={validationErrors.email ? styles.inputError : ''}
+                  placeholder="your@email.com" 
+                />
+                {validationErrors.email && <span className={styles.fieldError}>{validationErrors.email}</span>}
               </div>
               <div className={styles.formGroup}>
-                <label>Password</label>
-                <input type="password" value={password} onChange={e => setPassword(e.target.value)} required placeholder="••••••••" />
+                <label>Password {isSignup && <span className={styles.hint}>(min 6 chars, uppercase & lowercase)</span>}</label>
+                <input 
+                  type="password" 
+                  value={password} 
+                  onChange={e => { setPassword(e.target.value); setValidationErrors(prev => ({...prev, password: ''})); }} 
+                  className={validationErrors.password ? styles.inputError : ''}
+                  placeholder="••••••••" 
+                />
+                {validationErrors.password && <span className={styles.fieldError}>{validationErrors.password}</span>}
               </div>
 
               {isSignup && (
@@ -242,15 +314,20 @@ export default function UserProfileButton(): JSX.Element {
                   </div>
                   
                   <div className={styles.formGroup}>
-                    <label>Programming Languages</label>
+                    <label>Programming Languages <span className={styles.required}>*</span></label>
                     <div className={styles.checkboxGroup}>
                       {['Python', 'C++', 'JavaScript', 'Rust', 'Java'].map(lang => (
                         <label key={lang} className={styles.checkbox}>
-                          <input type="checkbox" checked={background.preferred_languages.includes(lang)} onChange={() => toggleLanguage(lang)} />
+                          <input 
+                            type="checkbox" 
+                            checked={background.preferred_languages.includes(lang)} 
+                            onChange={() => { toggleLanguage(lang); setValidationErrors(prev => ({...prev, languages: ''})); }} 
+                          />
                           {lang}
                         </label>
                       ))}
                     </div>
+                    {validationErrors.languages && <span className={styles.fieldError}>{validationErrors.languages}</span>}
                   </div>
                   
                   <div className={styles.formGroup}>
