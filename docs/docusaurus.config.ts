@@ -11,8 +11,8 @@ const config: Config = {
     v4: true,
   },
 
-  url: 'https://DanielHashmi.github.io',
-  baseUrl: '/physical-ai-and-humanoid-robotics/',
+  url: 'https://physical-ai-humanoid-robotics.vercel.app',
+  baseUrl: '/',
 
   organizationName: 'DanielHashmi',
   projectName: 'physical-ai-and-humanoid-robotics',
