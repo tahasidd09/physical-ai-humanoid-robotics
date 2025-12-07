@@ -14,7 +14,7 @@ links:
   spec: specs/1-docusaurus-ui-architecture/spec.md
   ticket: null
   adr: null
-  pr: https://github.com/DanielHashmi/physical-ai-and-humanoid-robotics/pull/new/1-docusaurus-ui-architecture
+  pr: https://github.com/tahasidd09/physical-ai-humanoid-robotics
 files:
   - history/prompts/docusaurus-ui-architecture/5-foundation-docusaurus-setup-ui-architecture-spec.spec.prompt.md
   - history/prompts/docusaurus-ui-architecture/6-no-critical-ambiguities-detected-for-docusaurus-ui-spec.spec.prompt.md
